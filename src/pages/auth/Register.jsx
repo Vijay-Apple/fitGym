@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // <- added Link and useNavigate
 import { registerUser } from "../../services/authService";
 
 function Register() {
@@ -13,6 +14,11 @@ function Register() {
     address: "",
   });
 
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate(); // to programmatically redirect
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -26,11 +32,19 @@ function Register() {
     try {
       const res = await registerUser(formData);
 
-      alert(res.message);
+      // Show success message
+      setMessage("User registered successfully!");
+      setError("");
+
+      // Optionally, redirect to login after 2 seconds
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
 
       console.log(res);
-    } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
+      setMessage("");
     }
   };
 
@@ -40,6 +54,11 @@ function Register() {
         <h2 className="text-2xl font-bold text-center mb-6">
           Gym Management Register
         </h2>
+
+        {message && (
+          <p className="text-green-600 text-center mb-4">{message}</p>
+        )}
+        {error && <p className="text-red-600 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -93,10 +112,8 @@ function Register() {
             <option value="admin">Admin</option>
           </select>
 
-          {/* Gender */}
           <div>
             <label className="block text-sm font-medium mb-1">Gender</label>
-
             <select
               name="gender"
               value={formData.gender}
@@ -110,10 +127,9 @@ function Register() {
               <option value="other">Other</option>
             </select>
           </div>
-          {/* Address */}
+
           <div>
             <label className="block text-sm font-medium mb-1">Address</label>
-
             <textarea
               name="address"
               placeholder="Enter address"
@@ -124,6 +140,7 @@ function Register() {
               required
             />
           </div>
+
           <input
             type="password"
             name="password"
@@ -135,13 +152,20 @@ function Register() {
           />
 
           <button
-            href="/login"
             type="submit"
             className="w-full bg-green-600 text-white p-2 rounded-lg"
           >
             Register
           </button>
         </form>
+
+        {/* Login link */}
+        <p className="text-center mt-4 text-sm">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Login here
+          </Link>
+        </p>
       </div>
     </div>
   );

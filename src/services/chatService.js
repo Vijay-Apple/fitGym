@@ -1,11 +1,28 @@
-import API from "./api";
+import axios from "axios";
 
-export const getMessages = async (receiverId) => {
-    const res = await API.get(`/chat/${receiverId}`);
-    return res.data;
+const API = "http://localhost:5003/api/chat";
+
+// ==============================
+// Get chat messages
+// ==============================
+export const getMessages = async (user1, user2) => {
+    try {
+        const res = await axios.get(`${API}?user1=${user1}&user2=${user2}`);
+        return res.data;
+    } catch (error) {
+        console.error("Error fetching messages:", error);
+        return [];
+    }
 };
 
-export const saveMessage = async (data) => {
-    const res = await API.post("/chat", data);
-    return res.data;
+// ==============================
+// Delete message
+// ==============================
+export const deleteMessage = async (msgId, userId) => {
+    try {
+        const res = await axios.delete(`${API}/${msgId}?userId=${userId}`);
+        return res.data;
+    } catch (error) {
+        console.error("Error deleting message:", error);
+    }
 };

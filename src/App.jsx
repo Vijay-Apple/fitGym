@@ -22,9 +22,9 @@ import PaymentPage from "./pages/payment/PaymentPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  // get logged in user
+  // ✅ Get logged-in user from localStorage
   const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?._id;
+  const userId = user?.id || user?._id;
 
   return (
     <BrowserRouter>
@@ -75,7 +75,11 @@ function App() {
           path="/chat"
           element={
             <ProtectedRoute>
-              <ChatPage userId={userId} />
+              {userId ? (
+                <ChatPage userId={userId} />
+              ) : (
+                <div>Please login first</div>
+              )}
             </ProtectedRoute>
           }
         />

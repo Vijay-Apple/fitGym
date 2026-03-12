@@ -26,15 +26,17 @@ function Login() {
 
     try {
       const res = await loginUser(formData);
-
       const data = res.data;
 
-      // save in redux
+      // ✅ Save in Redux
       dispatch(loginSuccess(data));
+
+      // ✅ Save in localStorage (important for ChatPage)
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       const userRole = data.user.role;
 
-      // redirect based on role
+      // Redirect based on role
       if (userRole === "admin") {
         navigate("/admin");
       } else if (userRole === "trainer") {
@@ -60,7 +62,6 @@ function Login() {
             <label className="block text-sm font-medium mb-1">
               Select Role
             </label>
-
             <select
               name="role"
               value={formData.role}
@@ -76,7 +77,6 @@ function Login() {
           {/* Email */}
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
-
             <input
               type="email"
               name="email"
@@ -91,7 +91,6 @@ function Login() {
           {/* Password */}
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
-
             <input
               type="password"
               name="password"
